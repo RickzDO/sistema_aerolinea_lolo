@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ViajesLoLO</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('https://turismodeislascanarias.com/sites/default/files/plane.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
+        }
+
+        header {
+            background-color: #003366;
+            color: white;
+            padding: 1rem 0;
+            text-align: center;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            background-color: #004080;
+        }
+
+        nav ul li {
+            margin: 0 1rem;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+
+        main {
+            padding: 2rem;
+            text-align: center;
+            background-color: rgba(0, 0, 51, 0.7);
+            margin: 1rem;
+            border-radius: 8px;
+        }
+
+        footer {
+            background-color: #003366;
+            color: white;
+            text-align: center;
+            padding: 0.5rem 0;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        form label,
+        form input,
+        form button,
+        form select,
+        form textarea {
+            margin: 0.5rem 0;
+            width: 100%;
+            padding: 0.5rem;
+        }
+
+        button {
+            background-color: #004080;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0059b3;
+        }
+
+        #resultados,
+        #resultadoCheckin,
+        #resultadoContacto,
+        #confirmacionReserva,
+        #resultadoCancelarReserva,
+        #resultadoLogin,
+        #resultadoRegistro {
+            margin-top: 1rem;
+            color: #ffcc00;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #000;
+        }
+
+        table th,
+        table td {
+            border: 1px solid #003366;
+            padding: 0.5rem;
+            text-align: left;
+        }
+
+        table th {
+            background-color: #004080;
+            color: #fff;
+        }
+
+        .center {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>ViajesLoLO</h1>
+        <nav>
+            <ul>
+                <li><a href="#inicio" onclick="mostrarSeccion('inicio')">Inicio</a></li>
+                <li><a href="#vuelos" onclick="mostrarSeccion('vuelos')">Vuelos Disponibles</a></li>
+                <li class="restricted"><a href="#reservas" onclick="mostrarSeccion('reservas')">Reservas</a></li>
+                <li class="restricted"><a href="#checkin" onclick="mostrarSeccion('checkin')">Check-in</a></li>
+                <li><a href="#contacto" onclick="mostrarSeccion('contacto')">Contacto</a></li>
+                <li><a href="#login" onclick="mostrarSeccion('login')">Login</a></li>
+                <li><a href="#registro" onclick="mostrarSeccion('registro')">Registro</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main id="inicio">
+        <h2>Bienvenidos a ViajesLoLO</h2>
+        <p>Tu viaje, nuestro compromiso. Descubre el mundo con nosotros.</p>
+    </main>
+    <main id="vuelos" class="hidden">
+        <h2>Vuelos Disponibles</h2>
+        <div id="listaVuelos"></div>
+    </main>
+    <main id="reservas" class="hidden">
+        <h2>Reservas</h2>
+        <form id="reservaForm">
+            <label for="origen">Origen:</label>
+            <input type="text" id="origen" name="origen" required>
+            <label for="destino">Destino:</label>
+            <input type="text" id="destino" name="destino" required>
+            <label for="fecha">Fecha:</label>
+            <input type="date" id="fecha" name="fecha" required>
+            <button type="submit">Buscar Vuelos</button>
+        </form>
+        <div id="resultados"></div>
+        <form id="reservaVueloForm" class="hidden">
+            <label for="vueloID">ID del Vuelo:</label>
+            <input type="text" id="vueloID" name="vueloID" required>
+            <label for="asientoID">ID del Asiento:</label>
+            <input type="text" id="asientoID" name="asientoID" required>
+            <button type="submit">Reservar Vuelo</button>
+        </form>
+        <div id="confirmacionReserva"></div>
+        <form id="cancelarReservaForm">
+            <label for="codigoReservaCancelar">Código de Reserva:</label>
+            <input type="text" id="codigoReservaCancelar" name="codigoReservaCancelar" required>
+            <button type="submit">Cancelar Reserva</button>
+        </form>
+        <div id="resultadoCancelarReserva"></div>
+    </main>
+    <main id="checkin" class="hidden">
+        <h2>Check-in</h2>
+        <form id="checkinForm">
+            <label for="codigoReserva">Código de Reserva:</label>
+            <input type="text" id="codigoReserva" name="codigoReserva" required>
+            <label for="apellido">Apellido:</label>
+            <input type="text" id="apellido" name="apellido" required>
+            <button type="submit">Check-in</button>
+        </form>
+        <div id="resultadoCheckin"></div>
+    </main>
+    <main id="contacto" class="hidden">
+        <h2>Contacto</h2>
+        <form id="contactoForm">
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" name="nombre" required>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            <label for="mensaje">Mensaje:</label>
+            <textarea id="mensaje" name="mensaje" required></textarea>
+            <button type="submit">Enviar</button>
+        </form>
+        <div id="resultadoContacto"></div>
+    </main>
+    <main id="login" class="hidden">
+        <h2>Login</h2>
+        <form id="loginForm">
+            <label for="clienteID">ID de Cliente:</label>
+            <input type="text" id="clienteID" name="clienteID" required>
+            <label for="clave">Clave:</label>
+            <input type="password" id="clave" name="clave" required>
+            <button type="submit">Login</button>
+        </form>
+        <div id="resultadoLogin"></div>
+    </main>
+    <main id="registro" class="hidden">
+        <h2>Registro</h2>
+        <form id="registroForm">
+            <label for="nombreRegistro">Nombre:</label>
+            <input type="text" id="nombreRegistro" name="nombre" required>
+            <label for="direccion">Dirección:</label>
+            <input type="text" id="direccion" name="direccion" required>
+            <label for="nombreCompania">Nombre de la Compañía:</label>
+            <input type="text" id="nombreCompania" name="nombreCompania" required>
+            <label for="telefono">Número de Teléfono:</label>
+            <input type="text" id="telefono" name="telefono" required>
+            <label for="emailRegistro">Email:</label>
+            <input type="email" id="emailRegistro" name="email" required>
+            <label for="tipoCliente">Tipo de Cliente:</label>
+            <select id="tipoCliente" name="tipoCliente" required>
+                <option value="corporativo">Corporativo</option>
+                <option value="minorista">Minorista</option>
+            </select>
+            <label for="claveRegistro">Clave:</label>
+            <input type="password" id="claveRegistro" name="clave" required>
+            <label for="confirmarClave">Confirmar Clave:</label>
+            <input type="password" id="confirmarClave" name="confirmarClave" required>
+            <button type="submit">Registrar</button>
+        </form>
+        <div id="resultadoRegistro"></div>
+    </main>
+    <footer>
+        <p>&copy; 2024 ViajesLoLO. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        // Usuario admin oculto
+        const usuarios = [
+            { id: 'admin', clave: 'admin' }
+        ];
+
+        function mostrarSeccion(id) {
+            const secciones = document.querySelectorAll('main');
+            secciones.forEach(seccion => {
+                if (seccion.id === id) {
+                    seccion.classList.remove('hidden');
+                } else {
+                    seccion.classList.add('hidden');
+                }
+            });
+        }
+
+        class Vuelo {
+            constructor(vueloID, origen, destino, fechaHoraSalida, fechaHoraLlegada, estado, capacidad, asientosDisponibles, precio) {
+                this.vueloID = vueloID;
+                this.origen = origen;
+                this.destino = destino;
+                this.fechaHoraSalida = fechaHoraSalida;
+                this.fechaHoraLlegada = fechaHoraLlegada;
+                this.estado = estado;
+                this.capacidad = capacidad;
+                this.asientosDisponibles = asientosDisponibles;
+                this.precio = precio;
+            }
+        }
+
+        const vuelos = [
+            new Vuelo('V001', 'Madrid', 'Barcelona', '2024-06-01T08:00', '2024-06-01T09:30', 'En horario', 180, 20, 120),
+            new Vuelo('V002', 'Madrid', 'París', '2024-06-02T10:00', '2024-06-02T12:30', 'En horario', 180, 15, 150),
+            new Vuelo('V003', 'Madrid', 'Londres', '2024-06-03T14:00', '2024-06-03T15:45', 'Retrasado', 180, 10, 200),
+            new Vuelo('V004', 'Barcelona', 'Roma', '2024-06-04T09:00', '2024-06-04T11:00', 'En horario', 180, 5, 130),
+            new Vuelo('V005', 'París', 'Nueva York', '2024-06-05T16:00', '2024-06-05T20:00', 'En horario', 180, 25, 500),
+            new Vuelo('V006', 'Londres', 'Tokio', '2024-06-06T18:00', '2024-06-07T10:00', 'Retrasado', 180, 30, 700),
+            new Vuelo('V007', 'Roma', 'Berlín', '2024-06-07T07:00', '2024-06-07T09:00', 'En horario', 180, 8, 100),
+            new Vuelo('V008', 'Berlín', 'Moscú', '2024-06-08T12:00', '2024-06-08T16:00', 'En horario', 180, 12, 300),
+            new Vuelo('V009', 'Madrid', 'Lisboa', '2024-06-09T11:00', '2024-06-09T12:30', 'En horario', 180, 18, 80),
+            new Vuelo('V010', 'Lisboa', 'Madrid', '2024-06-10T13:00', '2024-06-10T14:30', 'En horario', 180, 22, 90)
+        ];
+
+        const listaVuelosDiv = document.getElementById('listaVuelos');
+        const tablaVuelos = document.createElement('table');
+        tablaVuelos.innerHTML = `
+            <thead>
+                <tr>
+                    <th>ID del Vuelo</th>
+                    <th>Origen</th>
+                    <th>Destino</th>
+                    <th>Fecha y Hora de Salida</th>
+                    <th>Fecha y Hora de Llegada</th>
+                    <th>Estado</th>
+                    <th>Capacidad</th>
+                    <th>Asientos Disponibles</th>
+                    <th>Precio</th>
+                    <th>Reservar</th>
+                </tr>
+            </thead>
+            <tbody id="tbodyVuelos">
+            </tbody>
+        `;
+        listaVuelosDiv.appendChild(tablaVuelos);
+
+        const tbodyVuelos = document.getElementById('tbodyVuelos');
+        vuelos.forEach(vuelo => {
+            const fila = document.createElement('tr');
+            fila.innerHTML = `
+                <td>${vuelo.vueloID}</td>
+                <td>${vuelo.origen}</td>
+                <td>${vuelo.destino}</td>
+                <td>${vuelo.fechaHoraSalida}</td>
+                <td>${vuelo.fechaHoraLlegada}</td>
+                <td>${vuelo.estado}</td>
+                <td>${vuelo.capacidad}</td>
+                <td>${vuelo.asientosDisponibles}</td>
+                <td>${vuelo.precio} EUR</td>
+                <td class="center"><button onclick="reservarVuelo('${vuelo.vueloID}')">Reservar</button></td>
+            `;
+            tbodyVuelos.appendChild(fila);
+        });
+
+        let usuarioLogueado = false;
+
+        document.getElementById('loginForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const id = document.getElementById('clienteID').value;
+            const clave = document.getElementById('clave').value;
+            const usuario = usuarios.find(user => user.id === id && user.clave === clave);
+            if (usuario) {
+                usuarioLogueado = true;
+                document.querySelectorAll('.restricted').forEach(item => item.classList.remove('hidden'));
+                document.getElementById('resultadoLogin').innerText = 'Login exitoso. Ahora puede realizar reservas.';
+            } else {
+                document.getElementById('resultadoLogin').innerText = 'ID de cliente o clave incorrectos.';
+            }
+        });
+
+        function reservarVuelo(vueloID) {
+            if (usuarioLogueado) {
+                document.getElementById('reservaVueloForm').classList.remove('hidden');
+                document.getElementById('vueloID').value = vueloID;
+            } else {
+                alert('Debe iniciar sesión para reservar un vuelo.');
+            }
+        }
+
+        document.getElementById('registroForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const clave = document.getElementById('claveRegistro').value;
+            const confirmarClave = document.getElementById('confirmarClave').value;
+            if (clave === confirmarClave) {
+                const nuevoUsuario = {
+                    id: document.getElementById('emailRegistro').value,
+                    clave: clave
+                };
+                usuarios.push(nuevoUsuario);
+                document.getElementById('resultadoRegistro').innerText = 'Registro exitoso. Ahora puede iniciar sesión.';
+            } else {
+                document.getElementById('resultadoRegistro').innerText = 'Las claves no coinciden.';
+            }
+        });
+
+        // Al iniciar la página, ocultar los elementos restringidos
+        document.querySelectorAll('.restricted').forEach(item => item.classList.add('hidden'));
+    </script>
+</body>
+
+</html>
